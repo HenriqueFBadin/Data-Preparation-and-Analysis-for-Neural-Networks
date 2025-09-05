@@ -339,7 +339,7 @@ The Spaceship Titanic challenge asks you to build a binary classifier that predi
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv("docs/assets/data/train.csv")
+df = pd.read_csv("https://raw.githubusercontent.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks/main/docs/assets/data/test.csv")
 
 print("Missing values per column:\n")
 print(df.isnull().sum())
@@ -353,7 +353,7 @@ Therefore, I proceeded to clean and transform the data to make it suitable for a
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv("train.csv")
+df = pd.read_csv("https://raw.githubusercontent.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks/main/docs/assets/data/test.csv")
 
 print("Missing values per column:\n")
 print(df.isnull().sum())
@@ -462,7 +462,13 @@ The output is shown below:
 
 ![Histograms After Normalization](assets/imgs/normalized_final_graphs.png)
 
-
 ### Conclusion
 
 That way, I successfully preprocessed the Spaceship Titanic dataset, handling missing values, encoding categorical variables, and normalizing numerical features to ensure compatibility with a neural network using the tanh activation function. This preprocessing is crucial for achieving stable and effective training of the model.
+
+## References
+
+- [Kaggle - Spaceship Titanic](https://www.kaggle.com/competitions/spaceship-titanic)
+- [Spaceship Titanic: A complete guide](https://www.kaggle.com/code/samuelcortinhas/spaceship-titanic-a-complete-guide#Data)
+- [Numpy Documentation - multivariate_normal](https://numpy.org/doc/2.2/reference/random/generated/numpy.random.multivariate_normal.html)
+- [ANN-DL Course - Preprocessing](https://insper.github.io/ann-dl/classes/preprocessing/main)
