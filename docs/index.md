@@ -338,8 +338,10 @@ The Spaceship Titanic challenge asks you to build a binary classifier that predi
 ```pyodide install="pandas,matplotlib"
 import pandas as pd
 import matplotlib.pyplot as plt
+from pyodide.http import open_url
 
-df = pd.read_csv("https://raw.githubusercontent.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks/main/docs/assets/data/test.csv")
+url = "https://raw.githubusercontent.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks/main/docs/assets/data/test.csv"
+df = pd.read_csv(open_url(url))
 
 print("Missing values per column:\n")
 print(df.isnull().sum())
@@ -352,8 +354,10 @@ Therefore, I proceeded to clean and transform the data to make it suitable for a
 ```pyodide install="pandas,matplotlib"
 import pandas as pd
 import matplotlib.pyplot as plt
+from pyodide.http import open_url
 
-df = pd.read_csv("https://raw.githubusercontent.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks/main/docs/assets/data/test.csv")
+url = "https://raw.githubusercontent.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks/main/docs/assets/data/test.csv"
+df = pd.read_csv(open_url(url))
 
 print("Missing values per column:\n")
 print(df.isnull().sum())
