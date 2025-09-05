@@ -1,8 +1,8 @@
-site_name: Template de Entrega
-site_author: Sandmann, H.
-site_url: https://hsandmann.github.io/documentation.template
-repo_url: https://github.com/hsandmann/documentation.template
-repo_name: github/documentation.template
+site_name: Data Preparation and Analysis for Neural Networks
+site_author: Henrique Fazzio Badin
+site_url: https://henriquefbadin.github.io/Data-Preparation-and-Analysis-for-Neural-Networks
+repo_url: https://github.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks
+repo_name: github/Data-Preparation-and-Analysis-for-Neural-Networks
 
 theme:
   name: material
@@ -110,7 +110,7 @@ plugins:
       enable_creation_date: true
   - git-authors
   - git-committers:
-      repository: hsandmann/hsandmann.github.com
+      repository: HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks
       branch: main
   - search
   - badges
@@ -134,9 +134,3 @@ extra_javascript:
 nav:
   - Home: index.md
   - This documentation: ./thisdocumentation/main.md
-  - Roteiros:
-    - Roteiro 1: ./roteiro1/main.md
-    - Roteiro 2: ./roteiro2/main.md
-    - Roteiro 3: ./roteiro3/main.md
-    - Roteiro 4: ./roteiro4/main.md
-  - Projeto: ./projeto/main.md
