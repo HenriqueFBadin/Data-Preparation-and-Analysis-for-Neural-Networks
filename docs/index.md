@@ -340,7 +340,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pyodide.http import open_url
 
-url = "https://raw.githubusercontent.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks/main/docs/assets/data/test.csv"
+url = "https://raw.githubusercontent.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks/main/docs/assets/data/train.csv"
 df = pd.read_csv(open_url(url))
 
 print("Missing values per column:\n")
@@ -356,7 +356,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pyodide.http import open_url
 
-url = "https://raw.githubusercontent.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks/main/docs/assets/data/test.csv"
+url = "https://raw.githubusercontent.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks/main/docs/assets/data/train.csv"
 df = pd.read_csv(open_url(url))
 
 print("Missing values per column:\n")
