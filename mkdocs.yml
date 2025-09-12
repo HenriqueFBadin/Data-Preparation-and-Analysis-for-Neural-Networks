@@ -1,4 +1,4 @@
-site_name: Data Preparation and Analysis for Neural Networks
+site_name: Aplications and Learning on Deep Learning and Artificial Neural Networks
 site_author: Henrique Fazzio Badin
 site_url: https://henriquefbadin.github.io/Data-Preparation-and-Analysis-for-Neural-Networks
 repo_url: https://github.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks
@@ -132,5 +132,6 @@ extra_javascript:
   - https://fastly.jsdelivr.net/npm/echarts/dist/echarts.min.js
 
 nav:
-  - Home: index.md
+  - Data Preparation & Analysis: index.md
+  - Implementation of a Perceptron: perceptron_report_template.md
   - This documentation: ./thisdocumentation/main.md
