@@ -322,7 +322,7 @@ print("Média:", np.mean(final_accuracies))
 ```
 
 **Analysis:**  
-The heavy overlap between the two classes prevents the perceptron from finding a clear linear separator. As a result, the training accuracy fluctuates around 50%, as shown in the plot. The continuous misclassifications in the overlapping region force repeated weight updates, which cause oscillation without convergence. This highlights the limitation of perceptrons: they cannot achieve meaningful accuracy when data is not linearly separable.
+The heavy overlap between the two classes prevents the perceptron from finding a clear linear separator. As a result, the training accuracy fluctuates around 50%, as shown in the plot and by those 5 executions above. The continuous misclassifications in the overlapping region force repeated weight updates, which cause oscillation without convergence. This highlights the limitation of perceptrons: they cannot achieve meaningful accuracy when data is not linearly separable.
 
 ---
 
