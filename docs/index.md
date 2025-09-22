@@ -4,7 +4,7 @@
 
     2025.2
 
-This repository presents a focused, hands-on study on how **data generation and conditioning** shape neural network learning. The project was divided into three main parts:
+This report presents a focused, hands-on study on how **data generation and conditioning** shape neural network learning. The project was divided into three main parts:
 
 1. generate and analyze **2D Gaussian** datasets;
 

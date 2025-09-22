@@ -134,4 +134,5 @@ extra_javascript:
 nav:
   - Data Preparation & Analysis: index.md
   - Implementation of a Perceptron: perceptron_report_template.md
+  - Understanding Multi-Layer Perceptrons (MLPs): mlp.md
   - This documentation: ./thisdocumentation/main.md
