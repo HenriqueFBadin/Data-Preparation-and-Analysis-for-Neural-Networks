@@ -117,6 +117,9 @@ plugins:
   - minify:
       minify_html: true
   - markdown-exec
+  - mkdocs-jupyter:
+      include_source: True
+      execute: False
   - render_swagger:
       allow_arbitrary_locations : true
   - termynal:
@@ -135,4 +138,5 @@ nav:
   - Data Preparation & Analysis: index.md
   - Implementation of a Perceptron: perceptron_report_template.md
   - Understanding Multi-Layer Perceptrons (MLPs): mlp.md
+  - VAE MNIST: VAE_Exercise.ipynb
   - This documentation: ./thisdocumentation/main.md
