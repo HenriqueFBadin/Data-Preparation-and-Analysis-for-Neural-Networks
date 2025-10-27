@@ -139,4 +139,7 @@ nav:
   - Implementation of a Perceptron: perceptron_report_template.md
   - Understanding Multi-Layer Perceptrons (MLPs): mlp.md
   - VAE MNIST: VAE_Exercise.ipynb
+  - Projects:
+      - Project 1 - Classification: ./projetos/classification_project.md
+      - Project 2 - Regression: ./projetos/regression_project.ipynb
   - This documentation: ./thisdocumentation/main.md
