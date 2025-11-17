@@ -1,0 +1,921 @@
+<!DOCTYPE html><html lang=en class=no-js><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Henrique Fazzio Badin"><link href=https://henriquefbadin.github.io/Data-Preparation-and-Analysis-for-Neural-Networks/mlp/ rel=canonical><link href=../perceptron_report_template/ rel=prev><link href=../VAE_Exercise/ rel=next><link rel=icon href=../assets/images/favicon.png><meta name=generator content="mkdocs-1.6.1, mkdocs-material-9.6.18"><title>Understanding Multi-Layer Perceptrons (MLPs) - Aplications and Learning on Deep Learning and Artificial Neural Networks</title><link rel=stylesheet href=../assets/stylesheets/main.7e37652d.min.css><link rel=stylesheet href=../assets/stylesheets/palette.06af60db.min.css><style>:root{--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M64%20480c-35.3%200-64-28.7-64-64V96c0-35.3%2028.7-64%2064-64h320c35.3%200%2064%2028.7%2064%2064v213.5c0%2017-6.7%2033.3-18.7%2045.3L322.7%20461.3c-12%2012-28.3%2018.7-45.3%2018.7zm325.5-176H296c-13.3%200-24%2010.7-24%2024v93.5z%22/%3E%3C/svg%3E');--md-admonition-icon--abstract:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M384%20512H96c-53%200-96-43-96-96V96C0%2043%2043%200%2096%200h304c26.5%200%2048%2021.5%2048%2048v288c0%2020.9-13.4%2038.7-32%2045.3V448c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032zM96%20384c-17.7%200-32%2014.3-32%2032s14.3%2032%2032%2032h256v-64zm32-232c0%2013.3%2010.7%2024%2024%2024h176c13.3%200%2024-10.7%2024-24s-10.7-24-24-24H152c-13.3%200-24%2010.7-24%2024m24%2072c-13.3%200-24%2010.7-24%2024s10.7%2024%2024%2024h176c13.3%200%2024-10.7%2024-24s-10.7-24-24-24z%22/%3E%3C/svg%3E');--md-admonition-icon--info:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M256%20512a256%20256%200%201%200%200-512%20256%20256%200%201%200%200%20512m-32-352a32%2032%200%201%201%2064%200%2032%2032%200%201%201-64%200m-8%2064h48c13.3%200%2024%2010.7%2024%2024v88h8c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-80c-13.3%200-24-10.7-24-24s10.7-24%2024-24h24v-64h-24c-13.3%200-24-10.7-24-24s10.7-24%2024-24%22/%3E%3C/svg%3E');--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M461.2%2018.9C472.7%2024%20480%2035.4%20480%2048v416c0%2012.6-7.3%2024-18.8%2029.1s-24.8%203.2-34.3-5.1l-46.6-40.7c-43.6-38.1-98.7-60.3-156.4-63V480c0%2017.7-14.3%2032-32%2032h-32c-17.7%200-32-14.3-32-32v-96C57.3%20384%200%20326.7%200%20256s57.3-128%20128-128h84.5c61.8-.2%20121.4-22.7%20167.9-63.3L427%2024c9.4-8.3%2022.9-10.2%2034.3-5.1zM224%20320v.2c70.3%202.7%20137.8%2028.5%20192%2073.4V118.3c-54.2%2044.9-121.7%2070.7-192%2073.4z%22/%3E%3C/svg%3E');--md-admonition-icon--success:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M434.8%2070.1c14.3%2010.4%2017.5%2030.4%207.1%2044.7l-256%20352c-5.5%207.6-14%2012.3-23.4%2013.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8%200-45.3s32.8-12.5%2045.3%200l101.5%20101.5%20234-321.7c10.4-14.3%2030.4-17.5%2044.7-7.1z%22/%3E%3C/svg%3E');--md-admonition-icon--question:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M256%20512a256%20256%200%201%200%200-512%20256%20256%200%201%200%200%20512m0-336c-17.7%200-32%2014.3-32%2032%200%2013.3-10.7%2024-24%2024s-24-10.7-24-24c0-44.2%2035.8-80%2080-80s80%2035.8%2080%2080c0%2047.2-36%2067.2-56%2074.5v3.8c0%2013.3-10.7%2024-24%2024s-24-10.7-24-24v-8.1c0-20.5%2014.8-35.2%2030.1-40.2%206.4-2.1%2013.2-5.5%2018.2-10.3%204.3-4.2%207.7-10%207.7-19.6%200-17.7-14.3-32-32-32zm-32%20192a32%2032%200%201%201%2064%200%2032%2032%200%201%201-64%200%22/%3E%3C/svg%3E');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M256%200c14.7%200%2028.2%208.1%2035.2%2021l216%20400c6.7%2012.4%206.4%2027.4-.8%2039.5S486.1%20480%20472%20480H40c-14.1%200-27.1-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9%2020.5-21%2035.2-21m0%20168c-13.3%200-24%2010.7-24%2024v112c0%2013.3%2010.7%2024%2024%2024s24-10.7%2024-24V192c0-13.3-10.7-24-24-24m26.7%20216a26.7%2026.7%200%201%200-53.3%200%2026.7%2026.7%200%201%200%2053.3%200%22/%3E%3C/svg%3E');--md-admonition-icon--failure:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20576%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M480-16c6.9%200%2013%204.4%2015.2%2010.9l13.5%2040.4%2040.4%2013.5C555.6%2051%20560%2057.1%20560%2064s-4.4%2013-10.9%2015.2l-40.4%2013.5-13.5%2040.4c-2.2%206.5-8.3%2010.9-15.2%2010.9s-13-4.4-15.2-10.9l-13.5-40.4-40.4-13.5C404.4%2077%20400%2070.9%20400%2064s4.4-13%2010.9-15.2l40.4-13.5%2013.5-40.4C467-11.6%20473.1-16%20480-16M321.4%2097.4c12.5-12.5%2032.8-12.5%2045.3%200l80%2080c12.5%2012.5%2012.5%2032.8%200%2045.3l-10.9%2010.9c7.9%2022%2012.2%2045.7%2012.2%2070.5%200%20114.9-93.1%20208-208%20208S32%20418.9%2032%20304%20125.1%2096%20240%2096c24.7%200%2048.5%204.3%2070.5%2012.3zM144%20304c0-53%2043-96%2096-96%2013.3%200%2024-10.7%2024-24s-10.7-24-24-24c-79.5%200-144%2064.5-144%20144%200%2013.3%2010.7%2024%2024%2024s24-10.7%2024-24%22/%3E%3C/svg%3E');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M416%20427.4c58.5-44%2096-111.6%2096-187.4C512%20107.5%20397.4%200%20256%200S0%20107.5%200%20240c0%2075.8%2037.5%20143.4%2096%20187.4V464c0%2026.5%2021.5%2048%2048%2048h32v-40c0-13.3%2010.7-24%2024-24s24%2010.7%2024%2024v40h64v-40c0-13.3%2010.7-24%2024-24s24%2010.7%2024%2024v40h32c26.5%200%2048-21.5%2048-48zM96%20256a64%2064%200%201%201%20128%200%2064%2064%200%201%201-128%200m256-64a64%2064%200%201%201%200%20128%2064%2064%200%201%201%200-128%22/%3E%3C/svg%3E');--md-admonition-icon--bug:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20640%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M352%200c0-17.7-14.3-32-32-32s-32%2014.3-32%2032v64h-96c-53%200-96%2043-96%2096v224c0%2053%2043%2096%2096%2096h256c53%200%2096-43%2096-96V160c0-53-43-96-96-96h-96zM160%20368c0-13.3%2010.7-24%2024-24h32c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-32c-13.3%200-24-10.7-24-24m120%200c0-13.3%2010.7-24%2024-24h32c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-32c-13.3%200-24-10.7-24-24m120%200c0-13.3%2010.7-24%2024-24h32c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-32c-13.3%200-24-10.7-24-24M224%20176a48%2048%200%201%201%200%2096%2048%2048%200%201%201%200-96m144%2048a48%2048%200%201%201%2096%200%2048%2048%200%201%201-96%200m-304%200c0-17.7-14.3-32-32-32S0%20206.3%200%20224v96c0%2017.7%2014.3%2032%2032%2032s32-14.3%2032-32zm544-32c-17.7%200-32%2014.3-32%2032v96c0%2017.7%2014.3%2032%2032%2032s32-14.3%2032-32v-96c0-17.7-14.3-32-32-32%22/%3E%3C/svg%3E');--md-admonition-icon--example:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M288%200H128c-17.7%200-32%2014.3-32%2032s14.3%2032%2032%2032v151.5L7.5%20426.3C2.6%20435%200%20444.7%200%20454.7%200%20486.4%2025.6%20512%2057.3%20512h333.4c31.6%200%2057.3-25.6%2057.3-57.3%200-10-2.6-19.8-7.5-28.4L320%20215.5V64c17.7%200%2032-14.3%2032-32S337.7%200%20320%200zm-96%20215.5V64h64v151.5c0%2011.1%202.9%2022.1%208.4%2031.8L306%20320H142l41.6-72.7c5.5-9.7%208.4-20.6%208.4-31.8%22/%3E%3C/svg%3E');--md-admonition-icon--quote:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.0.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M0%20216C0%20149.7%2053.7%2096%20120%2096h8c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032h-8c-30.9%200-56%2025.1-56%2056v8h64c35.3%200%2064%2028.7%2064%2064v64c0%2035.3-28.7%2064-64%2064H64c-35.3%200-64-28.7-64-64zm256%200c0-66.3%2053.7-120%20120-120h8c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032h-8c-30.9%200-56%2025.1-56%2056v8h64c35.3%200%2064%2028.7%2064%2064v64c0%2035.3-28.7%2064-64%2064h-64c-35.3%200-64-28.7-64-64z%22/%3E%3C/svg%3E');}</style><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback"><style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style><link rel=stylesheet href=../assets/_markdown_exec_pyodide.css><link rel=stylesheet href=../assets/_markdown_exec_ansi.css><link rel=stylesheet href=../assets/stylesheets/badge.css><link rel=stylesheet href=../termynal.css><script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script><link href=../assets/stylesheets/glightbox.min.css rel=stylesheet><script src=../assets/javascripts/glightbox.min.js></script><style id=glightbox-style>
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head> <body dir=ltr data-md-color-scheme=default data-md-color-primary=grey data-md-color-accent=indigo> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#activity-understanding-multi-layer-perceptrons-mlps class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class="md-header md-header--shadow" data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=.. title="Aplications and Learning on Deep Learning and Artificial Neural Networks" class="md-header__button md-logo" aria-label="Aplications and Learning on Deep Learning and Artificial Neural Networks" data-md-component=logo> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> Aplications and Learning on Deep Learning and Artificial Neural Networks </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Understanding Multi-Layer Perceptrons (MLPs) </span> </div> </div> </div> <form class=md-header__option data-md-component=palette> <input class=md-option data-md-color-media data-md-color-scheme=default data-md-color-primary=grey data-md-color-accent=indigo aria-label="Switch to dark mode" type=radio name=__palette id=__palette_0> <label class="md-header__button md-icon" title="Switch to dark mode" for=__palette_1 hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg> </label> <input class=md-option data-md-color-media=(prefers-color-scheme) data-md-color-scheme=default data-md-color-primary=grey data-md-color-accent=indigo aria-label="Switch to light mode" type=radio name=__palette id=__palette_1> <label class="md-header__button md-icon" title="Switch to light mode" for=__palette_2 hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg> </label> <input class=md-option data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme=default data-md-color-primary=grey data-md-color-accent=indigo aria-label="Switch to dark mode" type=radio name=__palette id=__palette_2> <label class="md-header__button md-icon" title="Switch to dark mode" for=__palette_3 hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg> </label> <input class=md-option data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme=slate data-md-color-primary=grey data-md-color-accent=indigo aria-label="Switch to system preference" type=radio name=__palette id=__palette_3> <label class="md-header__button md-icon" title="Switch to system preference" for=__palette_0 hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg> </label> </form> <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" title=Clear aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg> </button> </nav> </form> <div class=md-search__output> <div class=md-search__scrollwrap tabindex=0 data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list role=presentation></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill=currentColor d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg> </div> <div class=md-source__repository> github/Data-Preparation-and-Analysis-for-Neural-Networks </div> </a> </div> </nav> </header> <div class=md-container data-md-component=container> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=.. title="Aplications and Learning on Deep Learning and Artificial Neural Networks" class="md-nav__button md-logo" aria-label="Aplications and Learning on Deep Learning and Artificial Neural Networks" data-md-component=logo> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg> </a> Aplications and Learning on Deep Learning and Artificial Neural Networks </label> <div class=md-nav__source> <a href=https://github.com/HenriqueFBadin/Data-Preparation-and-Analysis-for-Neural-Networks title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><!-- Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill=currentColor d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg> </div> <div class=md-source__repository> github/Data-Preparation-and-Analysis-for-Neural-Networks </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=.. class=md-nav__link> <span class=md-ellipsis> Data Preparation &amp; Analysis </span> </a> </li> <li class=md-nav__item> <a href=../perceptron_report_template/ class=md-nav__link> <span class=md-ellipsis> Implementation of a Perceptron </span> </a> </li> <li class="md-nav__item md-nav__item--active"> <input class="md-nav__toggle md-toggle" type=checkbox id=__toc> <label class="md-nav__link md-nav__link--active" for=__toc> <span class=md-ellipsis> Understanding Multi-Layer Perceptrons (MLPs) </span> <span class="md-nav__icon md-icon"></span> </label> <a href=./ class="md-nav__link md-nav__link--active"> <span class=md-ellipsis> Understanding Multi-Layer Perceptrons (MLPs) </span> </a> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#exercicio-1-calculo-manual-de-um-mlp class=md-nav__link> <span class=md-ellipsis> Exercício 1 — Cálculo manual de um MLP </span> </a> </li> <li class=md-nav__item> <a href=#exercicio-2-classificacao-binaria-sintetica class=md-nav__link> <span class=md-ellipsis> Exercício 2 — Classificação binária sintética </span> </a> </li> <li class=md-nav__item> <a href=#exercicio-3-classificacao-multiclasse class=md-nav__link> <span class=md-ellipsis> Exercício 3 — Classificação multiclasse </span> </a> </li> <li class=md-nav__item> <a href=#exercicio-4-mlp-profundo-duas-camadas-ocultas class=md-nav__link> <span class=md-ellipsis> Exercício 4 — MLP profundo (duas camadas ocultas) </span> </a> </li> <li class=md-nav__item> <a href=#referencias class=md-nav__link> <span class=md-ellipsis> Referências </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../VAE_Exercise/ class=md-nav__link> <span class=md-ellipsis> VAE - MNIST </span> </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type=checkbox id=__nav_5> <label class=md-nav__link for=__nav_5 id=__nav_5_label tabindex=0> <span class=md-ellipsis> Projects </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_5_label aria-expanded=false> <label class=md-nav__title for=__nav_5> <span class="md-nav__icon md-icon"></span> Projects </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../projetos/classification_project/ class=md-nav__link> <span class=md-ellipsis> Project 1 - Classification </span> </a> </li> <li class=md-nav__item> <a href=../projetos/regression_project/ class=md-nav__link> <span class=md-ellipsis> ANN Regression </span> </a> </li> <li class=md-nav__item> <a href=../projetos/generative/ class=md-nav__link> <span class=md-ellipsis> Projeto: Generative </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../thisdocumentation/main/ class=md-nav__link> <span class=md-ellipsis> This documentation </span> </a> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#exercicio-1-calculo-manual-de-um-mlp class=md-nav__link> <span class=md-ellipsis> Exercício 1 — Cálculo manual de um MLP </span> </a> </li> <li class=md-nav__item> <a href=#exercicio-2-classificacao-binaria-sintetica class=md-nav__link> <span class=md-ellipsis> Exercício 2 — Classificação binária sintética </span> </a> </li> <li class=md-nav__item> <a href=#exercicio-3-classificacao-multiclasse class=md-nav__link> <span class=md-ellipsis> Exercício 3 — Classificação multiclasse </span> </a> </li> <li class=md-nav__item> <a href=#exercicio-4-mlp-profundo-duas-camadas-ocultas class=md-nav__link> <span class=md-ellipsis> Exercício 4 — MLP profundo (duas camadas ocultas) </span> </a> </li> <li class=md-nav__item> <a href=#referencias class=md-nav__link> <span class=md-ellipsis> Referências </span> </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <h1 id=activity-understanding-multi-layer-perceptrons-mlps>Activity: Understanding Multi-Layer Perceptrons (MLPs)</h1> <details class="info inline end" open=open> <summary>Edição</summary> <p>2025.2</p> </details> <p>Nesta documentação são mostradas as realizações de quatro exercícios práticos de MLP que realizei ao longo do semestre. Cada exercício teve como objetivo aprofundar a compreensão sobre o funcionamento interno das redes neurais, desde o cálculo manual de forward pass e backpropagation até a implementação de MLPs para tarefas de classificação binária e multiclasse. A seguir, descrevo cada exercício, apresento os códigos utilizados e discuto os resultados obtidos.</p> <h2 id=exercicio-1-calculo-manual-de-um-mlp>Exercício&nbsp;1 — Cálculo manual de um MLP</h2> <p>Para o primeiro exercício considerei um MLP simples com 2 features de entrada, 2 neurônios em 1 camada oculta e 1 neurônio de saída. Para tal, utilizei a função de ativação <code>tanh</code> tanto para a camada oculta como para a camada de saída. A perda foi calculada usando o erro quadrático médio (MSE). Os pesos e vieses foram inicializados com valores fixos para facilitar a verificação dos cálculos.</p> <p>Usei os seguintes valores:</p> <ul> <li><strong>Entrada <code>x</code></strong>: <code>[0.5, -0.2]</code></li> <li><strong>Rótulo <code>y</code></strong>: <code>1</code></li> <li><strong>Pesos <code>W1</code></strong> (camada oculta): <code>[[0.3, -0.1], [0.2, 0.4]]</code></li> <li><strong>Vieses <code>b1</code></strong> (camada oculta): <code>[0.1, -0.2]</code></li> <li><strong>Pesos <code>W2</code></strong> (camada de saída): <code>[[0.5, -0.3]]</code></li> <li><strong>Vieses <code>b2</code></strong> (camada de saída): <code>[0.2]</code></li> <li><strong>Taxa de aprendizado <code>η</code></strong>: <code>0.3</code></li> </ul> <p>Primeiro, calculei o forward pass para obter a predição <code>y_pred</code> e a perda <code>L</code>. Em seguida, realizei o backpropagation para calcular os gradientes dos pesos e vieses. Finalmente, atualizei os parâmetros usando o gradiente descendente. A execução completa do código está abaixo:</p> <p> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/ace/1.16.0/ace.js></script> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js></script> <script type=text/javascript src=https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js></script> <link title=light rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow.min.css disabled=disabled> <link title=dark rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow-night-blue.min.css disabled=disabled> </p><div class=pyodide> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Editor (session: default)</span><span id=exec-5--run title="Run: press Ctrl-Enter" class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7Z"></path></svg></span> Run</span> </div> <div><pre id=exec-5--editor class=pyodide-editor>import numpy as np
+
+x = np.array([0.5, -0.2])
+y = 1
+W1 = np.array([[0.3, -0.1], [0.2, 0.4]])
+b1 = np.array([0.1, -0.2])
+W2 = np.array([[0.5, -0.3]])
+b2 = np.array([0.2])
+eta = 0.3
+
+def tanh(u):
+    return (np.exp(2 * u) - 1) / (np.exp(2 * u) + 1)
+
+# Forward
+z1 = W1.dot(x) + b1
+h1 = tanh(z1)
+u2 = W2.dot(h1) + b2
+y_pred = tanh(u2)
+L = (y - y_pred)**2 / len(x)
+
+# Backward
+delL_dely_pred = -2 * (y - y_pred) / len(x)
+dely_pred_du2 = 1 - y_pred**2
+delL_delW2 = delL_dely_pred * dely_pred_du2 * h1
+delL_delb2 = delL_dely_pred * dely_pred_du2
+delL_delh1 = delL_dely_pred * dely_pred_du2 * W2
+delh1_dz1 = 1 - h1**2
+delL_delW1 = np.outer((delL_delh1 * delh1_dz1).reshape(-1), x)
+delL_delb1 = (delL_delh1 * delh1_dz1)
+
+# Update
+W2_new = W2 - eta * delL_delW2
+b2_new = b2 - eta * delL_delb2
+W1_new = W1 - eta * delL_delW1
+b1_new = b1 - eta * delL_delb1
+
+print("z1 =", z1)
+print("h1 =", h1)
+print("u2 =", u2)
+print("y_pred =", y_pred)
+print("loss =", L)
+print("grad W2 =", delL_delW2)
+print("grad b2 =", delL_delb2)
+print("grad W1 =\n", delL_delW1)
+print("grad b1 =", delL_delb1)
+print("W1 updated =\n", W1_new)
+print("b1 updated =", b1_new)
+print("W2 updated =", W2_new)
+print("b2 updated =", b2_new)</pre></div> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Output</span><span id=exec-5--clear class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73c-.78.77-.78 2.04 0 2.83L5.03 20h7.66l8.72-8.73c.79-.77.79-2.04 0-2.83l-4.85-4.85c-.39-.39-.91-.59-1.42-.59M17 18l-2 2h7v-2"></path></svg></span> Clear</span> </div> <pre><code id=exec-5--output class=pyodide-output></code></pre> </div> <script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    setupPyodide(
+        'exec-5--',
+        install=['numpy'],
+        themeLight='tomorrow',
+        themeDark='tomorrow_night',
+        session='default',
+        minLines=49,
+        maxLines=49,
+    );
+});
+</script> <p></p> <h2 id=exercicio-2-classificacao-binaria-sintetica>Exercício&nbsp;2 — Classificação binária sintética</h2> <p>Para essa tarefa, criei um conjunto de 1000 dados sintético com duas classes. Usei a função <code>make_classification</code> do <code>scikit-learn</code> para gerar os dados, garantindo que cada classe tivesse uma distribuição diferente.</p> <p>Gerei 500 pontos para a classe 0 com um único cluster e, separadamente, dois grupos de 250 pontos cada para a classe 1, de modo que ela ficasse com dois clusters. Todos os conjuntos foram combinados, resultando em um dataset com 2 features, ambas informativas (n_informative=2), sem atributos redundantes (n_redundant=0), e o random_state=42 garantiu a reprodutibilidade.</p> <p>Por fim, ajustei class_sep para cerca de 1,3 e mantive flip_y=0 para evitar rótulos incorretos.</p> <p>Implementei então um MLP simples com uma camada oculta de 12 neurônios (<code>tanh</code>) e uma saída com um neurônio (<code>tanh</code>). A função de perda foi a MSE, usada na etapa passada. O treinamento foi realizado por 500 épocas, com uma taxa de aprendizado de 0,05. Para chegar nesses valores, testei diferentes quantidades de neurônios e taxas de aprendizado, sem exagerar para manter a simplicidade. O código completo está abaixo:</p> <p> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/ace/1.16.0/ace.js></script> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js></script> <script type=text/javascript src=https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js></script> <link title=light rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow.min.css disabled=disabled> <link title=dark rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow-night-blue.min.css disabled=disabled> </p><div class=pyodide> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Editor (session: default)</span><span id=exec-6--run title="Run: press Ctrl-Enter" class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7Z"></path></svg></span> Run</span> </div> <div><pre id=exec-6--editor class=pyodide-editor>import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+n = 1000
+X0, _ = make_classification(
+    n_samples=n // 2,
+    n_features=2,
+    n_informative=2,
+    n_redundant=0,
+    n_clusters_per_class=1,
+    n_classes=2,
+    class_sep=1.3,
+    random_state=42,
+)
+y0 = np.zeros(X0.shape[0], dtype=int)
+
+X1a, _ = make_classification(
+    n_samples=n // 4,
+    n_features=2,
+    n_informative=2,
+    n_redundant=0,
+    n_clusters_per_class=1,
+    n_classes=2,
+    class_sep=1.3,
+    random_state=42,
+)
+X1b, _ = make_classification(
+    n_samples=n - (n // 2 + n // 4),
+    n_features=2,
+    n_informative=2,
+    n_redundant=0,
+    n_clusters_per_class=1,
+    n_classes=2,
+    class_sep=1.3,
+    random_state=42,
+)
+y1a = np.ones(X1a.shape[0], dtype=int)
+y1b = np.ones(X1b.shape[0], dtype=int)
+
+X = np.vstack([X0, X1a, X1b])
+y = np.hstack([y0, y1a, y1b])
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+rng = np.random.default_rng(42)
+W1 = rng.normal(0, 1, (12, 2)) / np.sqrt(2)
+b1 = np.zeros(12)
+W2 = rng.normal(0, 1, (1, 12)) / np.sqrt(12)
+b2 = np.zeros(1)
+
+
+def tanh(x):
+    return np.tanh(x)
+
+
+eta = 0.05
+epochs = 500
+y_train = y_train.reshape(-1, 1).astype(float)
+
+for ep in range(1, epochs + 1):
+    # forward
+    z1 = X_train @ W1.T + b1
+    h1 = tanh(z1)
+    z2 = h1 @ W2.T + b2
+    y_pred = tanh(z2)
+
+    # loss (MSE)
+    loss = np.mean((y_train - y_pred) ** 2)
+
+    # backward
+    grad_z2 = 2 * (y_pred - y_train) * (1 - y_pred**2) / len(X_train)
+    grad_W2 = grad_z2.T @ h1
+    grad_b2 = grad_z2.sum(axis=0)
+
+    grad_h1 = grad_z2 @ W2
+    grad_z1 = grad_h1 * (1 - h1**2)
+    grad_W1 = grad_z1.T @ X_train
+    grad_b1 = grad_z1.sum(axis=0)
+
+    # update
+    W2 -= eta * grad_W2
+    b2 -= eta * grad_b2
+    W1 -= eta * grad_W1
+    b1 -= eta * grad_b1
+
+    if ep % 50 == 0 or ep == 1:
+        print(f"época {ep} | loss {loss:.4f}")
+
+z1 = X_test @ W1.T + b1
+h1 = tanh(z1)
+z2 = h1 @ W2.T + b2
+y_pred_test = tanh(z2)
+
+ypred = (y_pred_test.ravel() &gt;= 0).astype(int)
+
+acc = (ypred == y_test).mean()
+print(f"\nacurácia teste: {(acc*100):.4f}%")</pre></div> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Output</span><span id=exec-6--clear class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73c-.78.77-.78 2.04 0 2.83L5.03 20h7.66l8.72-8.73c.79-.77.79-2.04 0-2.83l-4.85-4.85c-.39-.39-.91-.59-1.42-.59M17 18l-2 2h7v-2"></path></svg></span> Clear</span> </div> <pre><code id=exec-6--output class=pyodide-output></code></pre> </div> <script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    setupPyodide(
+        'exec-6--',
+        install=['numpy', 'scikit-learn'],
+        themeLight='tomorrow',
+        themeDark='tomorrow_night',
+        session='default',
+        minLines=100,
+        maxLines=100,
+    );
+});
+</script> <p></p> <p>Depois, com a ajuda do chatGPT, adicionei uma visualização animada do processo de treinamento, mostrando como a fronteira de decisão evolui ao longo das épocas.</p> <p> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/ace/1.16.0/ace.js></script> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js></script> <script type=text/javascript src=https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js></script> <link title=light rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow.min.css disabled=disabled> <link title=dark rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow-night-blue.min.css disabled=disabled> </p><div class=pyodide> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Editor (session: default)</span><span id=exec-7--run title="Run: press Ctrl-Enter" class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7Z"></path></svg></span> Run</span> </div> <div><pre id=exec-7--editor class=pyodide-editor>import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+n = 1000
+X0, _ = make_classification(
+    n_samples=n // 2,
+    n_features=2,
+    n_informative=2,
+    n_redundant=0,
+    n_clusters_per_class=1,
+    n_classes=2,
+    class_sep=1.3,
+    random_state=42,
+)
+y0 = np.zeros(X0.shape[0], dtype=int)
+
+X1a, _ = make_classification(
+    n_samples=n // 4,
+    n_features=2,
+    n_informative=2,
+    n_redundant=0,
+    n_clusters_per_class=1,
+    n_classes=2,
+    class_sep=1.3,
+    random_state=42,
+)
+X1b, _ = make_classification(
+    n_samples=n - (n // 2 + n // 4),
+    n_features=2,
+    n_informative=2,
+    n_redundant=0,
+    n_clusters_per_class=1,
+    n_classes=2,
+    class_sep=1.3,
+    random_state=42,
+)
+y1a = np.ones(X1a.shape[0], dtype=int)
+y1b = np.ones(X1b.shape[0], dtype=int)
+
+X = np.vstack([X0, X1a, X1b])
+y = np.hstack([y0, y1a, y1b])
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+rng = np.random.default_rng(42)
+W1 = rng.normal(0, 1, (12, 2)) / np.sqrt(2)
+b1 = np.zeros(12)
+W2 = rng.normal(0, 1, (1, 12)) / np.sqrt(12)
+b2 = np.zeros(1)
+
+
+def tanh(x):
+    return np.tanh(x)
+
+
+eta = 0.05
+epochs = 500
+y_train = y_train.reshape(-1, 1).astype(float)
+
+fig, ax = plt.subplots(figsize=(6, 6))
+
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+xx, yy = np.meshgrid(np.linspace(x_min, x_max, 200), np.linspace(y_min, y_max, 200))
+
+
+def forward(X_in):
+    z1 = X_in @ W1.T + b1
+    h1 = tanh(z1)
+    z2 = h1 @ W2.T + b2
+    return tanh(z2), h1
+
+
+def update(frame):
+    global W1, b1, W2, b2
+
+    # treina algumas épocas por frame
+    for _ in range(5):
+        y_pred, h1 = forward(X_train)
+        loss = np.mean((y_train - y_pred) ** 2)
+
+        # backward
+        grad_z2 = 2 * (y_pred - y_train) * (1 - y_pred**2) / len(X_train)
+        grad_W2 = grad_z2.T @ h1
+        grad_b2 = grad_z2.sum(axis=0)
+
+        grad_h1 = grad_z2 @ W2
+        grad_z1 = grad_h1 * (1 - h1**2)
+        grad_W1 = grad_z1.T @ X_train
+        grad_b1 = grad_z1.sum(axis=0)
+
+        # update
+        W2 -= eta * grad_W2
+        b2 -= eta * grad_b2
+        W1 -= eta * grad_W1
+        b1 -= eta * grad_b1
+
+    # recalcula a fronteira
+    y_grid, _ = forward(np.c_[xx.ravel(), yy.ravel()])
+    y_grid_class = (y_grid.ravel() &gt;= 0).astype(int)
+
+    # predições no treino
+    y_pred_train, _ = forward(X_train)
+    y_pred_class = (y_pred_train.ravel() &gt;= 0).astype(int)
+
+    # identifica erros e acertos
+    errors = y_pred_class != y_train.ravel()
+    correct = ~errors
+    acc = (y_pred_class == y_train.ravel()).mean() * 100
+
+    ax.clear()
+    ax.contourf(xx, yy, y_grid_class.reshape(xx.shape), alpha=0.3, cmap=plt.cm.coolwarm)
+
+    # pontos corretos
+    ax.scatter(
+        X_train[correct, 0],
+        X_train[correct, 1],
+        c=y_train.ravel()[correct],
+        cmap=plt.cm.coolwarm,
+        edgecolors="k",
+        s=30,
+        marker="o",
+        label="Corretos",
+    )
+
+    # pontos errados (X)
+    ax.scatter(
+        X_train[errors, 0],
+        X_train[errors, 1],
+        c=y_train.ravel()[errors],
+        cmap=plt.cm.coolwarm,
+        edgecolors="k",
+        s=60,
+        marker="x",
+        label="Errados",
+    )
+
+    ax.set_title(f"Época {frame*5} | Loss={loss:.4f} | Acc={acc:.2f}%")
+    ax.legend(loc="upper right")
+    return ax
+
+
+ani = FuncAnimation(fig, update, frames=epochs // 5, interval=200, repeat=False)
+
+plt.show()</pre></div> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Output</span><span id=exec-7--clear class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73c-.78.77-.78 2.04 0 2.83L5.03 20h7.66l8.72-8.73c.79-.77.79-2.04 0-2.83l-4.85-4.85c-.39-.39-.91-.59-1.42-.59M17 18l-2 2h7v-2"></path></svg></span> Clear</span> </div> <pre><code id=exec-7--output class=pyodide-output></code></pre> </div> <script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    setupPyodide(
+        'exec-7--',
+        install=['numpy', 'scikit-learn', 'matplotlib'],
+        themeLight='tomorrow',
+        themeDark='tomorrow_night',
+        session='default',
+        minLines=150,
+        maxLines=150,
+    );
+});
+</script> <p></p> <p>O gif resultante mostra claramente como a fronteira de decisão se ajusta ao longo do treinamento. É possível observá-la abaixo:</p> <p><a class=glightbox data-type=image data-width=auto data-height=auto href=../assets/gifs/mlp_training.gif data-desc-position=bottom><img alt=mlp_training src=../assets/gifs/mlp_training.gif></a></p> <h2 id=exercicio-3-classificacao-multiclasse>Exercício&nbsp;3 — Classificação multiclasse</h2> <p>Neste exercício, o objetivo foi estender o MLP para lidar com um problema de classificação multiclasse. Para isso, criei um conjunto de 1500 dados sintético com três classes e 4 features. Usei a função <code>make_classification</code> do <code>scikit-learn</code> para gerar os dados, garantindo que cada classe tivesse uma distribuição diferente. Para a primeria classe eu utilizei 1/3 dos dados com 2 clusters, para a segunda classe 1/3 dos dados com 3 clusters e para a terceira classe o restante dos dados com 4 clusters. Todas as features foram informativas (n_informative=4), sem atributos redundantes (n_redundant=0), e o random_state=42 garantiu a reprodutibilidade. Para essa implementação, foi utilizada como base o código da etapa anterior, com o mínimo de alterações necessárias para adaptar o MLP à classificação multiclasse, sem mudar a estrutura geral. O código completo está abaixo:</p> <p> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/ace/1.16.0/ace.js></script> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js></script> <script type=text/javascript src=https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js></script> <link title=light rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow.min.css disabled=disabled> <link title=dark rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow-night-blue.min.css disabled=disabled> </p><div class=pyodide> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Editor (session: default)</span><span id=exec-8--run title="Run: press Ctrl-Enter" class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7Z"></path></svg></span> Run</span> </div> <div><pre id=exec-8--editor class=pyodide-editor>import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+
+n = 1500
+X0, _ = make_classification(
+    n_samples=n // 3,
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=2,
+    n_classes=3,
+    random_state=42,
+)
+y0 = np.zeros(X0.shape[0], dtype=int)
+
+X1, _ = make_classification(
+    n_samples=n // 3,
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=3,
+    n_classes=3,
+    random_state=43,
+)
+y1 = np.ones(X1.shape[0], dtype=int)
+
+X2, _ = make_classification(
+    n_samples=n - 2 * (n // 3),
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=4,
+    n_classes=3,
+    random_state=44,
+)
+y2 = np.full(X2.shape[0], 2)
+
+X = np.vstack([X0, X1, X2])
+y = np.hstack([y0, y1, y2])
+
+y_onehot = np.zeros((y.size, y.max() + 1))
+y_onehot[np.arange(y.size), y] = 1
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y_onehot, test_size=0.2, random_state=42, stratify=y
+)
+
+rng = np.random.default_rng(42)
+W1 = rng.normal(0, 1, (12, 4)) / np.sqrt(4)
+b1 = np.zeros(12)
+W2 = rng.normal(0, 1, (3, 12)) / np.sqrt(12)
+b2 = np.zeros(3) # 3 saídas
+
+
+def tanh(x):
+    return np.tanh(x)
+
+
+eta = 0.05
+epochs = 500
+y_train = y_train.astype(float)
+
+for ep in range(1, epochs + 1):
+    # forward
+    z1 = X_train @ W1.T + b1
+    h1 = tanh(z1)
+    z2 = h1 @ W2.T + b2
+    y_pred = tanh(z2)
+
+    # loss (MSE)
+    loss = np.mean((y_train - y_pred) ** 2)
+
+    # backward
+    grad_z2 = 2 * (y_pred - y_train) * (1 - y_pred**2) / len(X_train)
+    grad_W2 = grad_z2.T @ h1
+    grad_b2 = grad_z2.sum(axis=0)
+
+    grad_h1 = grad_z2 @ W2
+    grad_z1 = grad_h1 * (1 - h1**2)
+    grad_W1 = grad_z1.T @ X_train
+    grad_b1 = grad_z1.sum(axis=0)
+
+    # update
+    W2 -= eta * grad_W2
+    b2 -= eta * grad_b2
+    W1 -= eta * grad_W1
+    b1 -= eta * grad_b1
+
+    if ep % 50 == 0 or ep == 1:
+        print(f"época {ep} | loss {loss:.4f}")
+
+# avaliação
+z1 = X_test @ W1.T + b1
+h1 = tanh(z1)
+z2 = h1 @ W2.T + b2
+y_pred_test = tanh(z2)
+ypred = np.argmax(y_pred_test, axis=1)
+ytrue = np.argmax(y_test, axis=1)
+
+acc = (ypred == ytrue).mean()
+print(f"\nacurácia teste: {(acc*100):.4f}%")</pre></div> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Output</span><span id=exec-8--clear class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73c-.78.77-.78 2.04 0 2.83L5.03 20h7.66l8.72-8.73c.79-.77.79-2.04 0-2.83l-4.85-4.85c-.39-.39-.91-.59-1.42-.59M17 18l-2 2h7v-2"></path></svg></span> Clear</span> </div> <pre><code id=exec-8--output class=pyodide-output></code></pre> </div> <script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    setupPyodide(
+        'exec-8--',
+        install=['numpy', 'scikit-learn'],
+        themeLight='tomorrow',
+        themeDark='tomorrow_night',
+        session='default',
+        minLines=103,
+        maxLines=103,
+    );
+});
+</script> <p></p> <p>Foi possível notar que a acurácia no conjunto de teste foi bem menos satisfatória do que no exercício anterior, provavelmente devido à maior complexidade do problema. Como o problema é mais complexo, o ideal provavelmente seria evoluir a complexidade da arquitetura de forma condizente com o problema, mas mantive a simplicidade para evita mexer demais na estrutura do código utilizado na etapa anterior.</p> <p>Depois, com a ajuda do chatGPT, adicionei uma visualização animada do processo de treinamento, mostrando como as fronteiras de decisão evolui ao longo das épocas.</p> <p> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/ace/1.16.0/ace.js></script> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js></script> <script type=text/javascript src=https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js></script> <link title=light rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow.min.css disabled=disabled> <link title=dark rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow-night-blue.min.css disabled=disabled> </p><div class=pyodide> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Editor (session: default)</span><span id=exec-9--run title="Run: press Ctrl-Enter" class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7Z"></path></svg></span> Run</span> </div> <div><pre id=exec-9--editor class=pyodide-editor>import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from matplotlib.patches import Patch
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+
+n = 1500
+
+X0, _ = make_classification(
+    n_samples=n // 3,
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=2,
+    n_classes=3,
+    random_state=42,
+)
+y0 = np.zeros(X0.shape[0], dtype=int)
+
+X1, _ = make_classification(
+    n_samples=n // 3,
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=3,
+    n_classes=3,
+    random_state=43,
+)
+y1 = np.ones(X1.shape[0], dtype=int)
+
+X2, _ = make_classification(
+    n_samples=n - (n // 3) * 2,
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=4,
+    n_classes=3,
+    random_state=44,
+)
+y2 = np.full(X2.shape[0], 2)
+
+X = np.vstack([X0, X1, X2])
+y = np.hstack([y0, y1, y2])
+
+# one-hot encoding
+y_onehot = np.zeros((y.size, y.max() + 1))
+y_onehot[np.arange(y.size), y] = 1
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y_onehot, test_size=0.2, random_state=42, stratify=y
+)
+
+
+rng = np.random.default_rng(42)
+W1 = rng.normal(0, 1, (12, 4)) / np.sqrt(4)
+b1 = np.zeros(12)
+W2 = rng.normal(0, 1, (3, 12)) / np.sqrt(12)
+b2 = np.zeros(3)
+
+
+def tanh(x):
+    return np.tanh(x)
+
+
+eta = 0.05
+epochs = 500
+
+fig, ax = plt.subplots(figsize=(7, 7))
+
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+xx, yy = np.meshgrid(np.linspace(x_min, x_max, 200), np.linspace(y_min, y_max, 200))
+
+
+def forward(X_in):
+    z1 = X_in @ W1.T + b1
+    h1 = tanh(z1)
+    z2 = h1 @ W2.T + b2
+    return tanh(z2), h1
+
+
+def update(frame):
+    global W1, b1, W2, b2
+
+    # treino por alguns steps
+    for _ in range(5):
+        y_pred, h1 = forward(X_train)
+        loss = np.mean((y_train - y_pred) ** 2)
+
+        grad_z2 = 2 * (y_pred - y_train) * (1 - y_pred**2) / len(X_train)
+        grad_W2 = grad_z2.T @ h1
+        grad_b2 = grad_z2.sum(axis=0)
+
+        grad_h1 = grad_z2 @ W2
+        grad_z1 = grad_h1 * (1 - h1**2)
+        grad_W1 = grad_z1.T @ X_train
+        grad_b1 = grad_z1.sum(axis=0)
+
+        W2 -= eta * grad_W2
+        b2 -= eta * grad_b2
+        W1 -= eta * grad_W1
+        b1 -= eta * grad_b1
+
+    # fronteira (2 primeiras features, extras zeradas)
+    grid = np.c_[
+        xx.ravel(), yy.ravel(), np.zeros_like(xx.ravel()), np.zeros_like(xx.ravel())
+    ]
+    y_grid, _ = forward(grid)
+    y_grid_class = np.argmax(y_grid, axis=1)
+
+    # predições no treino
+    y_pred_train, _ = forward(X_train)
+    y_pred_class = np.argmax(y_pred_train, axis=1)
+    y_true_class = np.argmax(y_train, axis=1)
+
+    acc = (y_pred_class == y_true_class).mean() * 100
+    errors = y_pred_class != y_true_class
+    correct = ~errors
+
+    ax.clear()
+    ax.contourf(xx, yy, y_grid_class.reshape(xx.shape), alpha=0.3, cmap=plt.cm.Set1)
+
+    # pontos corretos
+    ax.scatter(
+        X_train[correct, 0],
+        X_train[correct, 1],
+        c=y_true_class[correct],
+        cmap=plt.cm.Set1,
+        edgecolors="k",
+        s=30,
+        marker="o",
+        label="Corretos",
+    )
+
+    # pontos errados
+    ax.scatter(
+        X_train[errors, 0],
+        X_train[errors, 1],
+        c=y_true_class[errors],
+        cmap=plt.cm.Set1,
+        edgecolors="k",
+        s=60,
+        marker="x",
+        label="Errados",
+    )
+
+    # título dinâmico
+    ax.set_title(f"Época {frame*5} | Loss={loss:.4f} | Acc={acc:.2f}%")
+
+    # legenda de classes + corretos/errados
+    class_labels = [
+        Patch(color=plt.cm.Set1(i / 3), label=f"Classe {i}") for i in range(3)
+    ]
+    ax.legend(
+        handles=class_labels
+        + [
+            plt.Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="w",
+                markerfacecolor="gray",
+                markeredgecolor="k",
+                label="Corretos",
+                markersize=8,
+            ),
+            plt.Line2D([0], [0], marker="x", color="k", label="Errados", markersize=8),
+        ],
+        loc="upper right",
+    )
+    return ax
+
+
+ani = FuncAnimation(fig, update, frames=epochs // 5, interval=200, repeat=False)
+
+ani.save("mlp_multiclass_legendas.gif", writer="pillow")
+plt.show()</pre></div> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Output</span><span id=exec-9--clear class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73c-.78.77-.78 2.04 0 2.83L5.03 20h7.66l8.72-8.73c.79-.77.79-2.04 0-2.83l-4.85-4.85c-.39-.39-.91-.59-1.42-.59M17 18l-2 2h7v-2"></path></svg></span> Clear</span> </div> <pre><code id=exec-9--output class=pyodide-output></code></pre> </div> <script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    setupPyodide(
+        'exec-9--',
+        install=['numpy', 'scikit-learn', 'matplotlib'],
+        themeLight='tomorrow',
+        themeDark='tomorrow_night',
+        session='default',
+        minLines=179,
+        maxLines=179,
+    );
+});
+</script> <p></p> <p>O gif resultante mostra claramente como as fronteiras de decisão se ajustam ao longo do treinamento. É possível observá-la abaixo:</p> <p><a class=glightbox data-type=image data-width=auto data-height=auto href=../assets/gifs/mlp_multiclass_legendas.gif data-desc-position=bottom><img alt=mlp_multiclass_legendas src=../assets/gifs/mlp_multiclass_legendas.gif></a></p> <h2 id=exercicio-4-mlp-profundo-duas-camadas-ocultas>Exercício&nbsp;4 — MLP profundo (duas camadas ocultas)</h2> <p>A última experiência consistiu em reutilizar o conjunto de dados do exercício&nbsp;3, mas treinar um MLP <strong>mais profundo</strong> com duas camadas ocultas (optei por 32 neurônios na primeira, 16 na segunda). A lógica do treino permanece a mesma; a principal diferença é que propagamos os gradientes por mais uma camada oculta. O código completo está abaixo:</p> <p> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/ace/1.16.0/ace.js></script> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js></script> <script type=text/javascript src=https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js></script> <link title=light rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow.min.css disabled=disabled> <link title=dark rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow-night-blue.min.css disabled=disabled> </p><div class=pyodide> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Editor (session: default)</span><span id=exec-10--run title="Run: press Ctrl-Enter" class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7Z"></path></svg></span> Run</span> </div> <div><pre id=exec-10--editor class=pyodide-editor>import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+n = 1500
+X0, _ = make_classification(
+    n_samples=n // 3,
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=2,
+    n_classes=3,
+    random_state=42,
+)
+y0 = np.zeros(X0.shape[0], dtype=int)
+
+X1, _ = make_classification(
+    n_samples=n // 3,
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=3,
+    n_classes=3,
+    random_state=43,
+)
+y1 = np.ones(X1.shape[0], dtype=int)
+
+X2, _ = make_classification(
+    n_samples=n - 2 * (n // 3),
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=4,
+    n_classes=3,
+    random_state=44,
+)
+y2 = np.full(X2.shape[0], 2)
+
+X = np.vstack([X0, X1, X2])
+y = np.hstack([y0, y1, y2])
+
+y_onehot = np.zeros((y.size, y.max() + 1))
+y_onehot[np.arange(y.size), y] = 1
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y_onehot, test_size=0.2, random_state=42, stratify=y
+)
+
+rng = np.random.default_rng(42)
+
+W1 = rng.normal(0, 1, (32, 4)) / np.sqrt(4)  # input → hidden1
+b1 = np.zeros(32)
+
+W2 = rng.normal(0, 1, (16, 32)) / np.sqrt(32)  # hidden1 → hidden2
+b2 = np.zeros(16)
+
+W3 = rng.normal(0, 1, (3, 16)) / np.sqrt(16)  # hidden2 → output
+b3 = np.zeros(3)
+
+
+def tanh(x):
+    return np.tanh(x)
+
+
+eta = 0.05
+epochs = 500
+y_train = y_train.astype(float)
+
+for ep in range(1, epochs + 1):
+    # forward
+
+    z1 = X_train @ W1.T + b1
+    h1 = tanh(z1)
+    z2 = h1 @ W2.T + b2
+    h2 = tanh(z2)
+    z3 = h2 @ W3.T + b3
+    y_pred = tanh(z3)
+
+    # loss (MSE)
+    loss = np.mean((y_train - y_pred) ** 2)
+
+    # backward
+    grad_z3 = 2 * (y_pred - y_train) * (1 - y_pred**2) / len(X_train)
+    grad_W3 = grad_z3.T @ h2
+    grad_b3 = grad_z3.sum(axis=0)
+
+    grad_h2 = grad_z3 @ W3
+    grad_z2 = grad_h2 * (1 - h2**2)
+    grad_W2 = grad_z2.T @ h1
+    grad_b2 = grad_z2.sum(axis=0)
+
+    grad_h1 = grad_z2 @ W2
+    grad_z1 = grad_h1 * (1 - h1**2)
+    grad_W1 = grad_z1.T @ X_train
+    grad_b1 = grad_z1.sum(axis=0)
+
+    W3 -= eta * grad_W3
+    b3 -= eta * grad_b3
+    W2 -= eta * grad_W2
+    b2 -= eta * grad_b2
+    W1 -= eta * grad_W1
+    b1 -= eta * grad_b1
+
+    if ep % 50 == 0 or ep == 1:
+        print(f"época {ep} | loss {loss:.4f}")
+
+z1 = X_test @ W1.T + b1
+h1 = tanh(z1)
+z2 = h1 @ W2.T + b2
+h2 = tanh(z2)
+z3 = h2 @ W3.T + b3
+y_pred_test = tanh(z3)
+
+ypred = np.argmax(y_pred_test, axis=1)
+ytrue = np.argmax(y_test, axis=1)
+
+acc = (ypred == ytrue).mean()
+print(f"\nacurácia teste: {(acc*100):.4f}%")</pre></div> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Output</span><span id=exec-10--clear class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73c-.78.77-.78 2.04 0 2.83L5.03 20h7.66l8.72-8.73c.79-.77.79-2.04 0-2.83l-4.85-4.85c-.39-.39-.91-.59-1.42-.59M17 18l-2 2h7v-2"></path></svg></span> Clear</span> </div> <pre><code id=exec-10--output class=pyodide-output></code></pre> </div> <script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    setupPyodide(
+        'exec-10--',
+        install=['numpy', 'scikit-learn'],
+        themeLight='tomorrow',
+        themeDark='tomorrow_night',
+        session='default',
+        minLines=118,
+        maxLines=118,
+    );
+});
+</script> <p></p> <p>A acurácia no conjunto de teste foi de aproximadamente <strong>49%</strong>, o mesmo que foi visto no exercício passado, mas ainda longe do ideal. Com a intenção de melhorar a performance, testei arquiteturas ainda mais profunda, aumentando o número de neurônios, mudando as funções da saída e do loss, além de outros testes (como normalizar os dados, por exemplo), que não tiveram sucesso. Com isso, na versão em que tive mais sucesso, optei por uma arquitetura de 64 neurônios na primeira camada oculta e 32 na segunda, com a função de ativação <code>tanh</code> na camada de entrada e a função <code>softmax</code> na camada de saída. A função de perda foi alterada para a entropia cruzada (cross-entropy loss). O código completo está abaixo:</p> <p> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/ace/1.16.0/ace.js></script> <script type=text/javascript src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js></script> <script type=text/javascript src=https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js></script> <link title=light rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow.min.css disabled=disabled> <link title=dark rel="alternate stylesheet" href=https://cdn.jsdelivr.net/npm/highlightjs-themes@1.0.0/tomorrow-night-blue.min.css disabled=disabled> </p><div class=pyodide> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Editor (session: default)</span><span id=exec-11--run title="Run: press Ctrl-Enter" class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7Z"></path></svg></span> Run</span> </div> <div><pre id=exec-11--editor class=pyodide-editor>import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+n = 1500
+X0, _ = make_classification(
+    n_samples=n // 3,
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=2,
+    n_classes=3,
+    random_state=42,
+)
+y0 = np.zeros(X0.shape[0], dtype=int)
+
+X1, _ = make_classification(
+    n_samples=n // 3,
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=3,
+    n_classes=3,
+    random_state=43,
+)
+y1 = np.ones(X1.shape[0], dtype=int)
+
+X2, _ = make_classification(
+    n_samples=n - 2 * (n // 3),
+    n_features=4,
+    n_informative=4,
+    n_redundant=0,
+    n_clusters_per_class=4,
+    n_classes=3,
+    random_state=44,
+)
+y2 = np.full(X2.shape[0], 2)
+
+X = np.vstack([X0, X1, X2])
+y = np.hstack([y0, y1, y2])
+
+y_onehot = np.zeros((y.size, y.max() + 1))
+y_onehot[np.arange(y.size), y] = 1
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y_onehot, test_size=0.2, random_state=42, stratify=y
+)
+
+rng = np.random.default_rng(42)
+
+W1 = rng.normal(0, 1, (64, 4)) / np.sqrt(4)
+b1 = np.zeros(64)
+
+W2 = rng.normal(0, 1, (32, 64)) / np.sqrt(64)
+b2 = np.zeros(32)
+
+W3 = rng.normal(0, 1, (3, 32)) / np.sqrt(32)
+b3 = np.zeros(3)
+
+
+def tanh(x):
+    return np.tanh(x)
+
+
+def softmax(x):
+    exp_x = np.exp(x - np.max(x, axis=1, keepdims=True))
+    return exp_x / np.sum(exp_x, axis=1, keepdims=True)
+
+
+def cross_entropy(y_true, y_pred):
+    eps = 1e-9
+    return -np.mean(np.sum(y_true * np.log(y_pred + eps), axis=1))
+
+
+eta = 0.05
+epochs = 1000
+y_train = y_train.astype(float)
+
+for ep in range(1, epochs + 1):
+    # forward
+    z1 = X_train @ W1.T + b1
+    h1 = tanh(z1)
+
+    z2 = h1 @ W2.T + b2
+    h2 = tanh(z2)
+
+    z3 = h2 @ W3.T + b3
+    y_pred = softmax(z3)
+
+    # loss
+    loss = cross_entropy(y_train, y_pred)
+
+    # backward
+    grad_z3 = (y_pred - y_train) / len(X_train)
+    grad_W3 = grad_z3.T @ h2
+    grad_b3 = grad_z3.sum(axis=0)
+
+    grad_h2 = grad_z3 @ W3
+    grad_z2 = grad_h2 * (1 - h2**2)
+    grad_W2 = grad_z2.T @ h1
+    grad_b2 = grad_z2.sum(axis=0)
+
+    grad_h1 = grad_z2 @ W2
+    grad_z1 = grad_h1 * (1 - h1**2)
+    grad_W1 = grad_z1.T @ X_train
+    grad_b1 = grad_z1.sum(axis=0)
+
+    # updates
+    W3 -= eta * grad_W3
+    b3 -= eta * grad_b3
+    W2 -= eta * grad_W2
+    b2 -= eta * grad_b2
+    W1 -= eta * grad_W1
+    b1 -= eta * grad_b1
+
+    if ep % 100 == 0 or ep == 1:
+        print(f"época {ep} | loss {loss:.4f}")
+
+z1 = X_test @ W1.T + b1
+h1 = tanh(z1)
+
+z2 = h1 @ W2.T + b2
+h2 = tanh(z2)
+
+z3 = h2 @ W3.T + b3
+y_pred_test = softmax(z3)
+
+ypred = np.argmax(y_pred_test, axis=1)
+ytrue = np.argmax(y_test, axis=1)
+
+acc = (ypred == ytrue).mean()
+print(f"\nacurácia teste: {(acc*100):.4f}%")</pre></div> <div class=pyodide-editor-bar> <span class=pyodide-bar-item>Output</span><span id=exec-11--clear class="pyodide-bar-item pyodide-clickable"><span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73c-.78.77-.78 2.04 0 2.83L5.03 20h7.66l8.72-8.73c.79-.77.79-2.04 0-2.83l-4.85-4.85c-.39-.39-.91-.59-1.42-.59M17 18l-2 2h7v-2"></path></svg></span> Clear</span> </div> <pre><code id=exec-11--output class=pyodide-output></code></pre> </div> <script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    setupPyodide(
+        'exec-11--',
+        install=['numpy', 'scikit-learn'],
+        themeLight='tomorrow',
+        themeDark='tomorrow_night',
+        session='default',
+        minLines=132,
+        maxLines=132,
+    );
+});
+</script> <p></p> <p>Com essa configuração, a acurácia no conjunto de teste melhorou para aproximadamente <strong>56%</strong>, indicando que a arquitetura mais profunda e as mudanças na função de ativação e perda ajudaram a capturar melhor a complexidade do problema. Apesar de tudo, a acurácia ainda está longe do ideal, sugerindo que o modelo pode se beneficiar de mais ajustes.</p> <p>A explicação pela qual optei por essas alterações foram as seguintes:</p> <ul> <li> <p>Softmax: usei essa função de ativação na saída porque ela transforma os valores finais da rede em probabilidades normalizadas, permitindo interpretar facilmente qual classe tem maior chance de ser correta.</p> </li> <li> <p>Cross-Entropy: escolhi essa função para o loss pois ela mede a diferença entre as probabilidades previstas e as reais, penalizando mais fortemente previsões incorretas e sendo mais adequada que o MSE em classificação multi-classe.</p> </li> <li> <p>Aumento da arquitetura (64 → 32): deu mais capacidade de aprendizado à rede, permitindo representar padrões mais complexos do conjunto de dados.</p> </li> <li> <p>Mais épocas (500 → 1000): ofereceu mais tempo de treino, reduzindo o underfitting e possibilitando que a rede convergisse melhor.</p> </li> </ul> <h2 id=referencias>Referências</h2> <ul> <li><strong>Notas da disciplina</strong> – Para realizar as etapas foram baseadas no material do curso.</li> <li><strong>scikit‑learn</strong> – Função <a href=https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html><code>make_classification</code></a> para gerar dados sintéticos com diferentes clusters.</li> <li><strong>ChatGPT</strong> – Assistente usado para apoio no arranjo do relatório e debug de erros de programação. Além disso, ajudou na criação das visualizações animadas e na refatoração de algumas partes do código. Me ajudou também com sugestões de melhorias na arquitetura do MLP final para que eu pudesse alcançar uma acurácia melhor.</li> </ul> <aside class=md-source-file> <span class=md-source-file__fact> <span class=md-icon title="Last update"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2025 00:43:35 UTC">November 17, 2025</span> </span> <span class=md-source-file__fact> <span class=md-icon title=Created> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"></path></svg> </span> <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2025 00:43:35 UTC">November 17, 2025</span> </span> <span class=md-source-file__fact> <span class=md-icon title=Contributors> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 4a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4"></path></svg> </span> <nav> <a href=mailto:henrique.badin@gmail.com>Henrique Fazzio Badin</a> </nav> </span> <span class=md-source-file__fact> <span class=md-icon title=Contributors> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"></path></svg> </span> <span>GitHub</span> <nav> <a href=https://github.com/HenriqueFBadin class=md-author title=@HenriqueFBadin> <img src="https://avatars.githubusercontent.com/u/103455601?v=4&size=72" alt=HenriqueFBadin> </a> </nav> </span> </aside> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> <button type=button class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg> Back to top </button> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <div class=md-progress data-md-component=progress role=progressbar></div> <script id=__config type=application/json>{"base": "..", "features": ["content.code.copy", "content.code.select", "content.code.annotate", "content.tooltips", "navigation.instant", "navigation.instant.progress", "navigation.top", "navigation.path", "navigation.tracking", "navigation.expand"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script> <script src=../assets/javascripts/bundle.92b07e13.min.js></script> <script src=../assets/_markdown_exec_pyodide.js></script> <script src=https://unpkg.com/mathjax/es5/tex-mml-chtml.js></script> <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script> <script src=https://fastly.jsdelivr.net/npm/jquery/dist/jquery.min.js></script> <script src=https://fastly.jsdelivr.net/npm/echarts/dist/echarts.min.js></script> <script src=../assets/javascripts/badge.js async></script> <script src=../termynal.js></script> <script id=init-glightbox>const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
