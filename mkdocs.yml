@@ -142,4 +142,5 @@ nav:
   - Projects:
       - Project 1 - Classification: ./projetos/classification_project.md
       - Project 2 - Regression: ./projetos/regression_project.ipynb
+      - Project 3 - Generative: ./projetos/generative.ipynb
   - This documentation: ./thisdocumentation/main.md
